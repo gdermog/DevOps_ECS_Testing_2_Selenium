@@ -1,0 +1,51 @@
+# .github/workflows/selenium-check.yml
+name: Build & Run Selenium Check
+
+on:
+  push:
+    branches: [ "main " ]
+  pull_request:
+    branches: [ "main " ]
+  workflow_dispatch:
+ 
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    env:
+      # Přečteme hodnoty z Actions Variables (repo/org/env level).
+      TEST_URL:      ${{ vars.TEST_URL }}
+      TEST_LOOKFOR:  ${{ vars.TEST_LOOKFOR }}
+      TEST_TAG:      ${{ vars.TEST_TAG }}
+      # Místní tag pro image, který v kroku buildu "načteme" do dockeru
+      IMAGE_TAG:     ${{ vars.DOCKER_IMG_TAG }}
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (load into local Docker)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          tags: ${{ env.IMAGE_TAG }}        # např. app-under-test:ci
+          load: true                        # "nahrát" do lokálního dockeru runneru, ať jde hned spustit
+
+      - name: Show built image
+        run: docker images | head -n 20
+
+      - name: Run container with CLI args from repo variables
+        # Pokud tvoje app vrací nenulový kód při nenalezení LookFor, krok (a job) FAILNE → to je žádoucí.
+        run: |
+          echo "URL=${TEST_URL}"
+          echo "LOOKFOR=${TEST_LOOKFOR}"
+          echo "TAG=${TEST_TAG}"
+          # Spuštění: argumenty se předají přímo aplikaci přes ENTRYPOINT ["dotnet","ECS2Selenium.dll"]
+          docker run --rm "$IMAGE_TAG" \
+            --url "$TEST_URL" \
+            --lookfor "$TEST_LOOKFOR" \
+            --tag "$TEST_TAG"

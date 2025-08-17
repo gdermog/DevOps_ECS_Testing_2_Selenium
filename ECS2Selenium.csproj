@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>.</DockerfileContext>	
+    <DockerDebuggeeProgram>/usr/bin/dotnet</DockerDebuggeeProgram>
+    <DockerDebuggeeArguments>
+      --additionalProbingPath /root/.nuget/fallbackpackages2
+      --additionalProbingPath /root/.nuget/fallbackpackages
+      /app/bin/$(Configuration)/$(TargetFramework)/$(AssemblyName).dll
+      --url http://ecs-nginx-demo-2-alb-20157527.eu-central-1.elb.amazonaws.com/
+      --lookfor "Hurá!"
+      --tag div
+    </DockerDebuggeeArguments>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNetSeleniumExtras.PageObjects" Version="3.11.0" />
+    <PackageReference Include="DotNetSeleniumExtras.WaitHelpers" Version="3.11.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+    <PackageReference Include="Selenium.Chrome.WebDriver" Version="85.0.0" />
+    <PackageReference Include="Selenium.Firefox.WebDriver" Version="0.27.0" />
+    <PackageReference Include="Selenium.Support" Version="4.35.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.35.0" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="139.0.7258.6800" />
+    <PackageReference Include="Selenium.WebDriver.GeckoDriver" Version="0.36.0" />
+    <PackageReference Include="Selenium.WebDriver.IEDriver" Version="4.14.0" />
+    <PackageReference Include="Selenium.WebDriverBackedSelenium" Version="4.1.0" />
+  </ItemGroup>
+
+</Project>

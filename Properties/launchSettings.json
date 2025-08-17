@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ECS2Selenium": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
