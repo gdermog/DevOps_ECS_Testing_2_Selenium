@@ -34,4 +34,9 @@ RUN dotnet publish "./ECS2Selenium.csproj" -c $BUILD_CONFIGURATION -o /app/publi
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+# zajistí spustitelnost bundlované binárky selenium-manager
+RUN chmod +x /app/runtimes/linux/native/selenium-manager || true
+RUN chown -R app:app /app
+
 ENTRYPOINT ["dotnet", "ECS2Selenium.dll"]
