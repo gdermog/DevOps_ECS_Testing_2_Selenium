@@ -36,7 +36,9 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 # zajistí spustitelnost bundlované binárky selenium-manager
+USER root
 RUN chmod +x /app/runtimes/linux/native/selenium-manager || true
 RUN chown -R app:app /app
 
+USER $APP_UID
 ENTRYPOINT ["dotnet", "ECS2Selenium.dll"]
