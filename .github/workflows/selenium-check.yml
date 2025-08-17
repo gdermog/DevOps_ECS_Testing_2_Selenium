@@ -21,6 +21,14 @@ jobs:
       IMAGE_TAG:     ${{ vars.DOCKER_IMG_TAG }}
 
     steps:
+      - name: Variables revision
+        run: |
+          echo "Running test with predefined setup:"
+          echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+          echo "URL=${TEST_URL}"
+          echo "LOOKFOR=${TEST_LOOKFOR}"
+          echo "TAG=${TEST_TAG}"    
+          
       - name: Check out repo
         uses: actions/checkout@v4
 
@@ -41,10 +49,6 @@ jobs:
       - name: Run container with CLI args from repo variables
         # Pokud tvoje app vrací nenulový kód při nenalezení LookFor, krok (a job) FAILNE → to je žádoucí.
         run: |
-          echo "URL=${TEST_URL}"
-          echo "LOOKFOR=${TEST_LOOKFOR}"
-          echo "TAG=${TEST_TAG}"
-          # Spuštění: argumenty se předají přímo aplikaci přes ENTRYPOINT ["dotnet","ECS2Selenium.dll"]
           docker run --rm "$IMAGE_TAG" \
             --url "$TEST_URL" \
             --lookfor "$TEST_LOOKFOR" \
